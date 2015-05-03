@@ -5,11 +5,11 @@ namespace Yakhair.Ports.Grc.UhePrng
 {
    public class UltraHighEntropyPrng
    {
-      private var o = 48;					// set the 'order' number of ENTROPY-holding 32-bit values
-      private var c = 1;					// init the 'carry' used by the multiply-with-carry (MWC) algorithm
-      private var p = o;					// init the 'phase' (max-1) of the intermediate variable pointer
-      private var s = new Array( o );	// declare our intermediate variables array
-      private var i, j, k = 0;			// general purpose locals
+      private var _order = 48;					// set the 'order' number of ENTROPY-holding 32-bit values
+      private var _carry = 1;					// init the 'carry' used by the multiply-with-carry (MWC) algorithm
+      private var _phase = _order;					// init the 'phase' (max-1) of the intermediate variable pointer
+      private var _intermediates = new Array( _order );	// declare our intermediate variables array
+      private var _i, _j, _k; // general purpose locals
    }
 }
 
