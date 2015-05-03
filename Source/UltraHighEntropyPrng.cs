@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace UltraHighEntropyPrng
+namespace Yakhair.Ports.Grc.UhePrng
 {
-    public class Class1
+    public class UltraHighEntropyPrng
     {
        "use strict";
 /*	============================================================================
