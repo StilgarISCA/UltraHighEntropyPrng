@@ -11,12 +11,23 @@ namespace Yakhair.Ports.Grc.UhePrng
       private Array _intermediates;
       private dynamic _i, _j, _k; // general purpose locals
 
+      private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
+
       public UltraHighEntropyPrng()
       {
          _order = 48; // set the 'order' number of ENTROPY-holding 32-bit values
          _carry = 1;  // init the 'carry' used by the multiply-with-carry (MWC) algorithm
          _phase = _order; // init the 'phase' (max-1) of the intermediate variable pointer
          _intermediates = var[_order]; // declare our intermediate variables array
+
+         // when our "uheprng" is initially invoked our PRNG state is initialized from the
+         // browser's own local PRNG. This is okay since although its generator might not
+         // be wonderful, it's useful for establishing large startup entropy for our usage.		
+         var mash = Mash();		// get a pointer to our high-performance "Mash" hash
+         for ( _i = 0; _i < _order; _i++ )
+         {
+            _intermediates[_i] = mash( _random.Next( 0, int.MaxValue ) );	// fill the array with initial mash hash values
+         }
       }
 
       /// <summary>
@@ -105,17 +116,7 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-//      var o = 48;					// set the 'order' number of ENTROPY-holding 32-bit values
-//      var c = 1;					// init the 'carry' used by the multiply-with-carry (MWC) algorithm
-//      var p = o;					// init the 'phase' (max-1) of the intermediate variable pointer
-//      var s = new Array(o);	// declare our intermediate variables array
-//      var i,j,k=0;				// general purpose locals
 
-//      // when our "uheprng" is initially invoked our PRNG state is initialized from the
-//      // browser's own local PRNG. This is okay since although its generator might not
-//      // be wonderful, it's useful for establishing large startup entropy for our usage.		
-//      var mash = Mash();		// get a pointer to our high-performance "Mash" hash
-//      for (i = 0; i < o; i++) s[i] = mash( Math.random() );	// fill the array with initial mash hash values
 
 //      // this PRIVATE (internal access only) function is the heart of the multiply-with-carry
 //      // (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
@@ -219,30 +220,3 @@ namespace Yakhair.Ports.Grc.UhePrng
 //  } ());
 //};
 
-///*	============================================================================
-//   This is based upon Johannes Baagoe's carefully designed and efficient hash
-//   function for use with JavaScript.  It has a proven "avalanche" effect such
-//   that every bit of the input affects every bit of the output 50% of the time,
-//   which is good.	See: http://baagoe.com/en/RandomMusings/hash/avalanche.xhtml
-//   ============================================================================
-//*/
-//function Mash() {
-//   var n = 0xefc8249d;
-//   var mash = function(data) {
-//      if ( data ) {
-//         data = data.toString();
-//         for (var i = 0; i < data.length; i++) {
-//            n += data.charCodeAt(i);
-//            var h = 0.02519603282416938 * n;
-//            n = h >>> 0;
-//            h -= n;
-//            h *= n;
-//            n = h >>> 0;
-//            h -= n;
-//            n += h * 0x100000000; // 2^32
-//         }
-//         return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
-//      } else n = 0xefc8249d;
-//   };
-//  return mash;
-//}
