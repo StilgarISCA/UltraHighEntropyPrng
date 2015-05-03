@@ -5,11 +5,11 @@ namespace Yakhair.Ports.Grc.UhePrng
 {
    public class UltraHighEntropyPrng
    {
-      private var _order;
-      private var _carry;
-      private var _phase;
+      private dynamic _order;
+      private dynamic _carry;
+      private dynamic _phase;
       private Array _intermediates;
-      private var _i, _j, _k; // general purpose locals
+      private dynamic _i, _j, _k; // general purpose locals
 
       public UltraHighEntropyPrng()
       {
@@ -18,9 +18,50 @@ namespace Yakhair.Ports.Grc.UhePrng
          _phase = _order; // init the 'phase' (max-1) of the intermediate variable pointer
          _intermediates = var[_order]; // declare our intermediate variables array
       }
+
+      /// <summary>
+      /// Hashing function
+      /// </summary>
+      /// <param name="data">Data to hash</param>
+      /// <returns>Hashed value</returns>
+      /// <remarks> This is based upon Johannes Baagoe's carefully designed and efficient hash function for use with JavaScript.  It has a proven "avalanche" effect such that every bit of the input affects every bit of the output 50% of the time, which is good.</remarks>
+      /// <seealso cref="https://web.archive.org/web/20111119022126/http://baagoe.org/en/wiki/Better_random_numbers_for_javascript"/>
+      private dynamic Mash( dynamic data )
+      {
+         var n = 0xefc8249d;
+
+         if ( data != null )
+         {
+            data = data.toString();
+            for ( var i = 0; i < data.length; i++ )
+            {
+               n += data.charCodeAt( i );
+               var h = 0.02519603282416938 * n;
+               n = Convert.ToUInt32( h ); // original: n = h >>> 0;
+               h -= n;
+               h *= n;
+               n = Convert.ToUInt32( h ); // original: n = h >>> 0;
+               h -= n;
+               n += h * 0x100000000; // 2^32
+            }
+            return ( Convert.ToUInt32( n ) ) * 2.3283064365386963e-10; // 2^-32
+         }
+
+         return n;
+      }
+
+      /// <summary>
+      /// Hashing function
+      /// </summary>
+      /// <see cref="Mash()"/>
+      private dynamic Mash()
+      {
+         return Mash( null );
+      }
    }
 }
 
+#region comments
 /************/
 //       "use strict";
 ///*	============================================================================
@@ -61,7 +102,7 @@ namespace Yakhair.Ports.Grc.UhePrng
 //   Qualifying MWC multipliers are: 187884, 686118, 898134, 1104375, 1250205,
 //   1460910 and 1768863. (We use the largest one that's < 2^21)
 //   ============================================================================ */
-
+#endregion
 //function uheprng() {
 //   return (function() {
 //      var o = 48;					// set the 'order' number of ENTROPY-holding 32-bit values
