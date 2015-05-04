@@ -23,11 +23,26 @@ namespace Yakhair.Ports.Grc.UhePrng
          // when our "uheprng" is initially invoked our PRNG state is initialized from the
          // browser's own local PRNG. This is okay since although its generator might not
          // be wonderful, it's useful for establishing large startup entropy for our usage.		
-         var mash = Mash();		// get a pointer to our high-performance "Mash" hash
+         //var mash = Mash();		// get a pointer to our high-performance "Mash" hash
          for ( _i = 0; _i < _order; _i++ )
          {
-            _intermediates[_i] = mash( _random.Next( 0, int.MaxValue ) );	// fill the array with initial mash hash values
+            _intermediates[_i] = Mash( _random.Next( 0, int.MaxValue ) );	// fill the array with initial mash hash values
          }
+      }
+
+      // this PRIVATE (internal access only) function is the heart of the multiply-with-carry
+      // (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
+      // 32-bit JavaScript fraction (0.0 to <1.0) it is a PRIVATE function used by the default
+      // [0-1] return function, and by the random 'string(n)' function which returns 'n'
+      // characters from 33 to 126.
+      private dynamic RawPrng()
+      {
+         if ( ++_phase >= _order )
+         {
+            _phase = 0;
+         }
+         var t = 1768863 * _intermediates[_phase] + _carry * 2.3283064365386963e-10; // 2^-32
+         return _intermediates[_phase] = t - ( _carry = t | 0 );
       }
 
       /// <summary>
