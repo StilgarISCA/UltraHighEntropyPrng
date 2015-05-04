@@ -30,6 +30,16 @@ namespace Yakhair.Ports.Grc.UhePrng
          }
       }
 
+      // this EXPORTED function is the default function returned by this library.
+      // The values returned are integers in the range from 0 to range-1. We first
+      // obtain two 32-bit fractions (from rawprng) to synthesize a single high
+      // resolution 53-bit prng (0 to <1), then we multiply this by the caller's
+      // "range" param and take the "floor" to return a equally probable integer.
+      public dynamic Random( dynamic range )
+      {
+         return Math.Floor( range * ( RawPrng() + ( RawPrng() * 0x200000 | 0 ) * 1.1102230246251565e-16 ) ); // 2^-53
+      };
+
       // this PRIVATE (internal access only) function is the heart of the multiply-with-carry
       // (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
       // 32-bit JavaScript fraction (0.0 to <1.0) it is a PRIVATE function used by the default
@@ -131,27 +141,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-
-
-//      // this PRIVATE (internal access only) function is the heart of the multiply-with-carry
-//      // (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
-//      // 32-bit JavaScript fraction (0.0 to <1.0) it is a PRIVATE function used by the default
-//      // [0-1] return function, and by the random 'string(n)' function which returns 'n'
-//      // characters from 33 to 126.
-//      function rawprng() {
-//         if (++p >= o) p = 0;
-//         var t = 1768863 * s[p] + c * 2.3283064365386963e-10; // 2^-32
-//         return s[p] = t - (c = t | 0);
-//      };
-
-//      // this EXPORTED function is the default function returned by this library.
-//      // The values returned are integers in the range from 0 to range-1. We first
-//      // obtain two 32-bit fractions (from rawprng) to synthesize a single high
-//      // resolution 53-bit prng (0 to <1), then we multiply this by the caller's
-//      // "range" param and take the "floor" to return a equally probable integer.
-//      var random = function( range ) {
-//         return Math.floor(range * (rawprng() + (rawprng() * 0x200000 | 0) * 1.1102230246251565e-16)); // 2^-53
-//      };
 
 //      // this EXPORTED function 'string(n)' returns a pseudo-random string of
 //      // 'n' printable characters ranging from chr(33) to chr(126) inclusive.
