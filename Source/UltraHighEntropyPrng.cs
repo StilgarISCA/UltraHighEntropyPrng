@@ -73,7 +73,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       // this PRIVATE "hash" function is used to evolve the generator's internal
       // entropy state. It is also called by the EXPORTED addEntropy() function
       // which is used to pour entropy into the PRNG.
-      private void Hash( string[] args )
+      private void Hash( string args )
       {
          for ( _i = 0; _i < args.Length; _i++ )
          {
@@ -124,15 +124,13 @@ namespace Yakhair.Ports.Grc.UhePrng
          }
       }
 
-      // this handy exported function is used to add entropy to our uheprng at any time
-      public void AddEntropy( /* accept zero or more arguments */ )
+      /// <summary>
+      /// Used to add additional entropy to the Prng
+      /// </summary>
+      /// <param name="values">Variable number of parameters used to generate additional entropy</param>
+      public void AddEntropy( params string[] values )
       {
-         var args = [];
-         for (_i = 0; _i < arguments.Length; i++)
-         {
-            args.push( arguments[_i] );
-         }
-         Hash( ( _k++ ) + ( DateTime.UtcNow ) + args.join( string.Empty ) + _random.Next( 0, int.MaxValue ) );
+         Hash( ( _k++ ) + ( DateTime.UtcNow.Ticks ) + string.Join( string.Empty, values ) + _random.Next( 0, int.MaxValue ) );
       }
 
       // if we want to provide a deterministic startup context for our PRNG,
