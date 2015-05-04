@@ -132,7 +132,22 @@ namespace Yakhair.Ports.Grc.UhePrng
          {
             args.push( arguments[_i] );
          }
-         Hash( (_k++) + ( DateTime.UtcNow ) + args.join(string.Empty) + _random.Next( 0, int.MaxValue ) );
+         Hash( (_k++) + ( DateTime.UtcNow ) + args.join( string.Empty ) + _random.Next( 0, int.MaxValue ) );
+      }
+
+      // if we want to provide a deterministic startup context for our PRNG,
+      // but without directly setting the internal state variables, this allows
+      // us to initialize the mash hash and PRNG's internal state before providing
+      // some hashing input
+      public void InitState()
+      {
+         Mash();													// pass a null arg to force mash hash to init
+         for ( _i = 0; _i < _order; _i++ )
+         {
+            _intermediates[_i] = Mash( ' ' );	// fill the array with initial mash hash values
+         }
+         _carry = 1;													// init our multiply-with-carry carry
+         _phase = _order;  										// init our phase
       }
 
       /// <summary>
@@ -221,17 +236,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-//      // if we want to provide a deterministic startup context for our PRNG,
-//      // but without directly setting the internal state variables, this allows
-//      // us to initialize the mash hash and PRNG's internal state before providing
-//      // some hashing input
-//      random.initState = function() {
-//         mash();													// pass a null arg to force mash hash to init
-//         for (i = 0; i < o; i++) s[i] = mash( ' ' );	// fill the array with initial mash hash values
-//         c = 1;													// init our multiply-with-carry carry
-//         p = o;													// init our phase
-//      };
-
 //      // we use this (optional) exported function to signal the JavaScript interpreter
 //      // that we're finished using the "Mash" hash function so that it can free up the
 //      // local "instance variables" is will have been maintaining.  It's not strictly
