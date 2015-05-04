@@ -69,6 +69,24 @@ namespace Yakhair.Ports.Grc.UhePrng
          return _intermediates[_phase] = t - ( _carry = t | 0 );
       }
 
+      // this PRIVATE "hash" function is used to evolve the generator's internal
+      // entropy state. It is also called by the EXPORTED addEntropy() function
+      // which is used to pour entropy into the PRNG.
+      private void Hash( string[] args )
+      {
+         for ( _i = 0; _i < args.Length; _i++ )
+         {
+            for ( _j = 0; _j < _order; _j++ )
+            {
+               _intermediates[_j] -= Mash( args[_i] );
+               if ( _intermediates[_j] < 0 )
+               {
+                  _intermediates[_j] += 1;
+               }
+            }
+         }
+      }
+
       /// <summary>
       /// Hashing function
       /// </summary>
@@ -155,19 +173,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-//      // this PRIVATE "hash" function is used to evolve the generator's internal
-//      // entropy state. It is also called by the EXPORTED addEntropy() function
-//      // which is used to pour entropy into the PRNG.
-//      function hash() {
-//         var args = Array.prototype.slice.call(arguments)
-//         for (i = 0; i < args.length; i++) {
-//            for (j = 0; j < o; j++) {
-//               s[j] -= mash(args[i]);
-//               if (s[j] < 0) s[j] += 1;
-//            }
-//         }
-//      };
-
 //      // this EXPORTED "clean string" function removes leading and trailing spaces and non-printing
 //      // control characters, including any embedded carriage-return (CR) and line-feed (LF) characters,
 //      // from any string it is handed. this is also used by the 'hashstring' function (below) to help
