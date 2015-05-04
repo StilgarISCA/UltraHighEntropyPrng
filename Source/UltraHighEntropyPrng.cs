@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Text;
 
 namespace Yakhair.Ports.Grc.UhePrng
 {
@@ -38,7 +39,20 @@ namespace Yakhair.Ports.Grc.UhePrng
       public dynamic Random( dynamic range )
       {
          return Math.Floor( range * ( RawPrng() + ( RawPrng() * 0x200000 | 0 ) * 1.1102230246251565e-16 ) ); // 2^-53
-      };
+      }
+
+      // this EXPORTED function 'string(n)' returns a pseudo-random string of
+      // 'n' printable characters ranging from chr(33) to chr(126) inclusive.
+      private dynamic RandomString( dynamic count )
+      {
+         var stringBuilder = new StringBuilder();
+         for ( int i = 0; i < count; i++ )
+         {
+            char newChar = ( 33 + Random( 94 ) ).ToCharArray()[0];
+            stringBuilder.Append( newChar );
+         }
+         return stringBuilder;
+      }
 
       // this PRIVATE (internal access only) function is the heart of the multiply-with-carry
       // (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
@@ -141,15 +155,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-
-//      // this EXPORTED function 'string(n)' returns a pseudo-random string of
-//      // 'n' printable characters ranging from chr(33) to chr(126) inclusive.
-//      random.string = function( count ) {
-//         var i, s='';
-//         for ( i=0; i<count; i++ ) s += String.fromCharCode( 33+random(94) );
-//         return s;
-//      };
-
 //      // this PRIVATE "hash" function is used to evolve the generator's internal
 //      // entropy state. It is also called by the EXPORTED addEntropy() function
 //      // which is used to pour entropy into the PRNG.
