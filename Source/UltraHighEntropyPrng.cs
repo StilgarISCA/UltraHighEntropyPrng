@@ -7,11 +7,11 @@ namespace Yakhair.Ports.Grc.UhePrng
 {
    public class UltraHighEntropyPrng
    {
-      private dynamic _order;
-      private dynamic _carry;
-      private dynamic _phase;
-      private Array _intermediates;
-      private dynamic _i, _j, _k; // general purpose locals
+      private int _order;
+      private int _carry;
+      private int _phase;
+      private string[] _intermediates;
+      private int _i, _j, _k; // general purpose locals
 
       private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
 
@@ -20,7 +20,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          _order = 48; // set the 'order' number of ENTROPY-holding 32-bit values
          _carry = 1;  // init the 'carry' used by the multiply-with-carry (MWC) algorithm
          _phase = _order; // init the 'phase' (max-1) of the intermediate variable pointer
-         _intermediates = var[_order]; // declare our intermediate variables array
+         _intermediates = new string[_order]; // declare our intermediate variables array
 
          // when our "uheprng" is initially invoked our PRNG state is initialized from the
          // browser's own local PRNG. This is okay since although its generator might not
@@ -132,7 +132,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          {
             args.push( arguments[_i] );
          }
-         Hash( (_k++) + ( DateTime.UtcNow ) + args.join( string.Empty ) + _random.Next( 0, int.MaxValue ) );
+         Hash( ( _k++ ) + ( DateTime.UtcNow ) + args.join( string.Empty ) + _random.Next( 0, int.MaxValue ) );
       }
 
       // if we want to provide a deterministic startup context for our PRNG,
