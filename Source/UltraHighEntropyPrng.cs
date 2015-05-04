@@ -10,7 +10,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       private int _order;
       private int _carry;
       private int _phase;
-      private string[] _intermediates;
+      private char[] _intermediates;
       private int _i, _j, _k; // general purpose locals
 
       private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
@@ -20,7 +20,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          _order = 48; // set the 'order' number of ENTROPY-holding 32-bit values
          _carry = 1;  // init the 'carry' used by the multiply-with-carry (MWC) algorithm
          _phase = _order; // init the 'phase' (max-1) of the intermediate variable pointer
-         _intermediates = new string[_order]; // declare our intermediate variables array
+         _intermediates = new char[_order]; // declare our intermediate variables array
 
          // when our "uheprng" is initially invoked our PRNG state is initialized from the
          // browser's own local PRNG. This is okay since although its generator might not
@@ -82,7 +82,7 @@ namespace Yakhair.Ports.Grc.UhePrng
                _intermediates[_j] -= Mash( args[_i] );
                if ( _intermediates[_j] < 0 )
                {
-                  _intermediates[_j] += 1;
+                  _intermediates[_j] = (char) ( _intermediates[_j] + 1 );
                }
             }
          }
@@ -106,14 +106,16 @@ namespace Yakhair.Ports.Grc.UhePrng
 
       // this EXPORTED "hash string" function hashes the provided character string after first removing
       // any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
-      public dynamic HashString( string inStr )
+      public dynamic HashString( string input )
       {
-         inStr = CleanString( inStr );
-         Mash( inStr );											// use the string to evolve the 'mash' state
-         for ( _i = 0; _i < inStr.Length; _i++ )       // scan through the characters in our string
+         input = CleanString( input );
+         Mash( input );											// use the string to evolve the 'mash' state
+
+         char[] inputAry = input.ToCharArray();
+         for ( _i = 0; _i < inputAry.Length; _i++ )   // scan through the characters in our string
          {
-            _k = inStr.charCodeAt( _i );						// get the character code at the location
-            for ( _j = 0; _j < _order; _j++ )						//	"mash" it into the UHEPRNG state
+            _k = inputAry[_i];      						// get the character code at the location
+            for ( _j = 0; _j < _order; _j++ )			//	"mash" it into the UHEPRNG state
             {
                _intermediates[_j] -= Mash( _k );
                if ( _intermediates[_j] < 0 )
