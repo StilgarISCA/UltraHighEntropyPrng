@@ -104,6 +104,26 @@ namespace Yakhair.Ports.Grc.UhePrng
          return cleaned; // return the cleaned up result
       }
 
+      // this EXPORTED "hash string" function hashes the provided character string after first removing
+      // any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
+      public dynamic HashString( string inStr )
+      {
+         inStr = CleanString( inStr );
+         Mash( inStr );											// use the string to evolve the 'mash' state
+         for ( _i = 0; _i < inStr.Length; _i++)       // scan through the characters in our string
+         {
+            _k = inStr.charCodeAt( _i );						// get the character code at the location
+            for ( _j = 0; _j < _order; _j++)						//	"mash" it into the UHEPRNG state
+            {
+               _intermediates[_j] -= Mash( _k );
+               if ( _intermediates[_j] < 0 )
+               {
+                  _intermediates[_j] += 1;
+               }
+            }
+         }
+      };
+
       /// <summary>
       /// Hashing function
       /// </summary>
@@ -190,20 +210,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-//      // this EXPORTED "hash string" function hashes the provided character string after first removing
-//      // any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
-//      random.hashString = function( inStr ) {
-//         inStr = random.cleanString( inStr );
-//         mash( inStr );											// use the string to evolve the 'mash' state
-//         for ( i = 0; i < inStr.length; i++) {			// scan through the characters in our string
-//            k = inStr.charCodeAt( i );						// get the character code at the location
-//            for (j = 0; j < o; j++) {						//	"mash" it into the UHEPRNG state
-//               s[j] -= mash( k );
-//               if (s[j] < 0) s[j] += 1;
-//            }
-//         }
-//      };
-
 //      // this handy exported function is used to add entropy to our uheprng at any time
 //      random.addEntropy = function( /* accept zero or more arguments */ ) {
 //         var args = [];
