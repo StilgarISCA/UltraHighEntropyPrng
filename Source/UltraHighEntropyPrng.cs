@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Yakhair.Ports.Grc.UhePrng
 {
@@ -85,6 +86,22 @@ namespace Yakhair.Ports.Grc.UhePrng
                }
             }
          }
+      }
+
+      // this EXPORTED "clean string" function removes leading and trailing spaces and non-printing
+      // control characters, including any embedded carriage-return (CR) and line-feed (LF) characters,
+      // from any string it is handed. this is also used by the 'hashstring' function (below) to help
+      // users always obtain the same EFFECTIVE uheprng seeding key.
+      public string CleanString( string toClean )
+      {
+         string cleaned = toClean.Trim(); // remove any/all leading/trailing spaces
+
+         // remove any/all control characters
+         const string controlCharactersPattern = "[\x00-\x1F]";
+         var cleanControlCharacters = new Regex( controlCharactersPattern );
+         cleaned = cleanControlCharacters.Replace( cleaned, string.Empty );
+
+         return cleaned; // return the cleaned up result
       }
 
       /// <summary>
@@ -173,17 +190,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-//      // this EXPORTED "clean string" function removes leading and trailing spaces and non-printing
-//      // control characters, including any embedded carriage-return (CR) and line-feed (LF) characters,
-//      // from any string it is handed. this is also used by the 'hashstring' function (below) to help
-//      // users always obtain the same EFFECTIVE uheprng seeding key.
-//      random.cleanString = function( inStr ) {
-//         inStr = inStr.replace(/(^\s*)|(\s*$)/gi,""); // remove any/all leading spaces
-//         inStr = inStr.replace(/[\x00-\x1F]/gi,"");	// remove any/all control characters
-//         inStr = inStr.replace(/\n /,"\n");				// remove any/all trailing spaces
-//         return inStr;											// return the cleaned up result
-//      }
-
 //      // this EXPORTED "hash string" function hashes the provided character string after first removing
 //      // any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
 //      random.hashString = function( inStr ) {
