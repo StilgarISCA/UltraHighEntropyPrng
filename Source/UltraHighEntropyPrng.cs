@@ -110,10 +110,10 @@ namespace Yakhair.Ports.Grc.UhePrng
       {
          inStr = CleanString( inStr );
          Mash( inStr );											// use the string to evolve the 'mash' state
-         for ( _i = 0; _i < inStr.Length; _i++)       // scan through the characters in our string
+         for ( _i = 0; _i < inStr.Length; _i++ )       // scan through the characters in our string
          {
             _k = inStr.charCodeAt( _i );						// get the character code at the location
-            for ( _j = 0; _j < _order; _j++)						//	"mash" it into the UHEPRNG state
+            for ( _j = 0; _j < _order; _j++ )						//	"mash" it into the UHEPRNG state
             {
                _intermediates[_j] -= Mash( _k );
                if ( _intermediates[_j] < 0 )
@@ -122,7 +122,18 @@ namespace Yakhair.Ports.Grc.UhePrng
                }
             }
          }
-      };
+      }
+
+      // this handy exported function is used to add entropy to our uheprng at any time
+      public void AddEntropy( /* accept zero or more arguments */ )
+      {
+         var args = [];
+         for (_i = 0; _i < arguments.Length; i++)
+         {
+            args.push( arguments[_i] );
+         }
+         Hash( (_k++) + ( DateTime.UtcNow ) + args.join(string.Empty) + _random.Next( 0, int.MaxValue ) );
+      }
 
       /// <summary>
       /// Hashing function
@@ -210,13 +221,6 @@ namespace Yakhair.Ports.Grc.UhePrng
 #endregion
 //function uheprng() {
 //   return (function() {
-//      // this handy exported function is used to add entropy to our uheprng at any time
-//      random.addEntropy = function( /* accept zero or more arguments */ ) {
-//         var args = [];
-//         for ( i = 0; i < arguments.length; i++ ) args.push( arguments[i] );
-//         hash( (k++) + (new Date().getTime()) + args.join('') + Math.random() );
-//      };
-
 //      // if we want to provide a deterministic startup context for our PRNG,
 //      // but without directly setting the internal state variables, this allows
 //      // us to initialize the mash hash and PRNG's internal state before providing
