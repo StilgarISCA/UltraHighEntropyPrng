@@ -70,9 +70,11 @@ namespace Yakhair.Ports.Grc.UhePrng
          return _intermediates[_phase] = t - ( _carry = t | 0 );
       }
 
-      // this PRIVATE "hash" function is used to evolve the generator's internal
-      // entropy state. It is also called by the EXPORTED addEntropy() function
-      // which is used to pour entropy into the PRNG.
+      /// <summary>
+      /// Evolve the generator's internal entropy state
+      /// </summary>
+      /// <param name="args"></param>
+      /// <seealso cref="AddEntropy"/>
       private void Hash( string args )
       {
          for ( _i = 0; _i < args.Length; _i++ )
@@ -88,10 +90,13 @@ namespace Yakhair.Ports.Grc.UhePrng
          }
       }
 
-      // this EXPORTED "clean string" function removes leading and trailing spaces and non-printing
-      // control characters, including any embedded carriage-return (CR) and line-feed (LF) characters,
-      // from any string it is handed. this is also used by the 'hashstring' function (below) to help
-      // users always obtain the same EFFECTIVE uheprng seeding key.
+      /// <summary>
+      /// Removes leading and trailing spaces and non-printing control
+      /// characters, including any embedded carriage-return (CR) and
+      /// line-feed (LF) characters, from any string it is handed
+      /// </summary>
+      /// <param name="toClean"></param>
+      /// <returns></returns>
       public string CleanString( string toClean )
       {
          string cleaned = toClean.Trim(); // remove any/all leading/trailing spaces
