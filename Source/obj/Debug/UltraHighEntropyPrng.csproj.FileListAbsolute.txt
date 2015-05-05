@@ -1,0 +1,5 @@
+C:\projects\UltraHighEntropyPrng\Source\obj\Debug\UltraHighEntropyPrng.csprojResolveAssemblyReference.cache
+C:\projects\UltraHighEntropyPrng\Source\bin\Debug\Yakhair.Ports.Grc.UhePrng.dll
+C:\projects\UltraHighEntropyPrng\Source\bin\Debug\Yakhair.Ports.Grc.UhePrng.pdb
+C:\projects\UltraHighEntropyPrng\Source\obj\Debug\Yakhair.Ports.Grc.UhePrng.dll
+C:\projects\UltraHighEntropyPrng\Source\obj\Debug\Yakhair.Ports.Grc.UhePrng.pdb

@@ -8,9 +8,9 @@ namespace Yakhair.Ports.Grc.UhePrng
    public class UltraHighEntropyPrng
    {
       private int _order;
-      private int _carry;
+      private double _carry;
       private int _phase;
-      private char[] _intermediates;
+      private double[] _intermediates;
       private int _i, _j, _k; // general purpose locals
 
       private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
@@ -20,7 +20,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          _order = 48; // set the 'order' number of ENTROPY-holding 32-bit values
          _carry = 1;  // init the 'carry' used by the multiply-with-carry (MWC) algorithm
          _phase = _order; // init the 'phase' (max-1) of the intermediate variable pointer
-         _intermediates = new char[_order]; // declare our intermediate variables array
+         _intermediates = new double[_order]; // declare our intermediate variables array
 
          // when our "uheprng" is initially invoked our PRNG state is initialized from the
          // browser's own local PRNG. This is okay since although its generator might not
@@ -37,9 +37,10 @@ namespace Yakhair.Ports.Grc.UhePrng
       // obtain two 32-bit fractions (from rawprng) to synthesize a single high
       // resolution 53-bit prng (0 to <1), then we multiply this by the caller's
       // "range" param and take the "floor" to return a equally probable integer.
-      public dynamic Random( dynamic range )
+      public dynamic Random( int range )
       {
-         return Math.Floor( range * ( RawPrng() + ( RawPrng() * 0x200000 | 0 ) * 1.1102230246251565e-16 ) ); // 2^-53
+         var tmp = (int) (RawPrng() * 0x200000);
+         return Math.Floor( range * ( RawPrng() + ( tmp | 0 ) * 1.1102230246251565e-16 ) ); // 2^-53
       }
 
       // this EXPORTED function 'string(n)' returns a pseudo-random string of
@@ -60,14 +61,15 @@ namespace Yakhair.Ports.Grc.UhePrng
       // 32-bit JavaScript fraction (0.0 to <1.0) it is a PRIVATE function used by the default
       // [0-1] return function, and by the random 'string(n)' function which returns 'n'
       // characters from 33 to 126.
-      private dynamic RawPrng()
+      private double RawPrng()
       {
          if ( ++_phase >= _order )
          {
             _phase = 0;
          }
          var t = 1768863 * _intermediates[_phase] + _carry * 2.3283064365386963e-10; // 2^-32
-         return _intermediates[_phase] = t - ( _carry = t | 0 );
+         int temp = (int) t | 0;
+         return _intermediates[_phase] = t - ( _carry = temp );
       }
 
       /// <summary>
@@ -111,7 +113,7 @@ namespace Yakhair.Ports.Grc.UhePrng
 
       // this EXPORTED "hash string" function hashes the provided character string after first removing
       // any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
-      public dynamic HashString( string input )
+      public void HashString( string input )
       {
          input = CleanString( input );
          Mash( input );											// use the string to evolve the 'mash' state
@@ -178,7 +180,7 @@ namespace Yakhair.Ports.Grc.UhePrng
                h *= n;
                n = Convert.ToUInt32( h ); // original: n = h >>> 0;
                h -= n;
-               n += h * 0x100000000; // 2^32
+               n += Convert.ToUInt32( h * 0x100000000 ); // 2^32
             }
             return ( Convert.ToUInt32( n ) ) * 2.3283064365386963e-10; // 2^-32
          }
