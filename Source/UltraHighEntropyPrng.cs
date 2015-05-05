@@ -164,7 +164,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       /// <returns>Hashed value</returns>
       /// <remarks> This is based upon Johannes Baagoe's carefully designed and efficient hash function for use with JavaScript.  It has a proven "avalanche" effect such that every bit of the input affects every bit of the output 50% of the time, which is good.</remarks>
       /// <seealso cref="https://web.archive.org/web/20111119022126/http://baagoe.org/en/wiki/Better_random_numbers_for_javascript"/>
-      private dynamic Mash( dynamic data )
+      private double Mash( dynamic data )
       {
          var n = 0xefc8249d;
 
@@ -192,7 +192,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       /// Hashing function
       /// </summary>
       /// <see cref="Mash()"/>
-      private dynamic Mash()
+      private double Mash()
       {
          return Mash( null );
       }
