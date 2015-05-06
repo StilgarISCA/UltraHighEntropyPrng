@@ -25,7 +25,8 @@ namespace PrngDemo
    // this 'Generate' function is called whenever the user presses the "Generate Random Numbers" button on the web page.
    // it takes the currently displayed contents of the "SeedKey" region to initialize the UHEPRNG into a known state,
    // then generates the user-specified number of pseudo-random numbers having the requested range (0 to n-1).
-   private void Generate() {
+   private void Generate()
+   {
       var display = string.Empty;													// this is the string that we'll be placing into the PRN display DIV
       var range = document.getElementById( 'RngRange' ).value;				// pull the form's parameters for our generation
       var count = document.getElementById( 'RngCount' ).value;
@@ -46,8 +47,8 @@ namespace PrngDemo
       {
          // we are about to generate our PRNs, so we capture the current "SeedKey"
          // from the webpage's form field and use it to setup our PRNG
-         prng.initState();																// init the PRNG and its private hash function
-         prng.hashString( document.getElementById( 'seedkey' ).value );
+         _prng.InitState();																// init the PRNG and its private hash function
+         _prng.HashString( document.getElementById( 'seedkey' ).value );
          
 
          // with the PRNG initialized into a known starting state by the provided SeedKey
