@@ -28,7 +28,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          //var mash = Mash();		// get a pointer to our high-performance "Mash" hash
          for ( _i = 0; _i < _order; _i++ )
          {
-            _intermediates[_i] = Mash( _random.Next( 0, int.MaxValue ) );	// fill the array with initial mash hash values
+            _intermediates[_i] = Mash( _random.NextDouble() );	// fill the array with initial mash hash values
          }
       }
 
@@ -39,7 +39,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       // "range" param and take the "floor" to return a equally probable integer.
       public dynamic Random( int range )
       {
-         var tmp = (int) (RawPrng() * 0x200000);
+         var tmp = (int) ( RawPrng() * 0x200000 );
          return Math.Floor( range * ( RawPrng() + ( tmp | 0 ) * 1.1102230246251565e-16 ) ); // 2^-53
       }
 
@@ -170,15 +170,15 @@ namespace Yakhair.Ports.Grc.UhePrng
 
          if ( data != null )
          {
-            data = data.toString();
-            for ( var i = 0; i < data.length; i++ )
+            data = data.ToString();
+            for ( var i = 0; i < data.Length; i++ )
             {
-               n += data.charCodeAt( i );
-               var h = 0.02519603282416938 * n;
-               n = Convert.ToUInt32( h ); // original: n = h >>> 0;
+               n += data.ToCharArray()[i]; // original: n += data.charCodeAt( i );
+               double h = 0.02519603282416938 * n;
+               n = Convert.ToUInt32( (int)h >> 0 ); // original: n = h >>> 0;
                h -= n;
                h *= n;
-               n = Convert.ToUInt32( h ); // original: n = h >>> 0;
+               n = Convert.ToUInt32( (int) h >> 0 ); // original: n = h >>> 0;
                h -= n;
                n += Convert.ToUInt32( h * 0x100000000 ); // 2^32
             }
