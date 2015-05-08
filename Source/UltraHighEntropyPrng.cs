@@ -45,15 +45,15 @@ namespace Yakhair.Ports.Grc.UhePrng
 
       // this EXPORTED function 'string(n)' returns a pseudo-random string of
       // 'n' printable characters ranging from chr(33) to chr(126) inclusive.
-      private dynamic RandomString( dynamic count )
+      public string RandomString( int count )
       {
          var stringBuilder = new StringBuilder();
          for ( int i = 0; i < count; i++ )
          {
-            char newChar = ( 33 + Random( 94 ) ).ToCharArray()[0];
+            char newChar = Convert.ToChar( 33 + (int)Random( 94 ) );
             stringBuilder.Append( newChar );
          }
-         return stringBuilder;
+         return stringBuilder.ToString();
       }
 
       // this PRIVATE (internal access only) function is the heart of the multiply-with-carry
@@ -164,6 +164,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       /// <returns>Hashed value</returns>
       /// <remarks> This is based upon Johannes Baagoe's carefully designed and efficient hash function for use with JavaScript.  It has a proven "avalanche" effect such that every bit of the input affects every bit of the output 50% of the time, which is good.</remarks>
       /// <seealso cref="https://web.archive.org/web/20111119022126/http://baagoe.org/en/wiki/Better_random_numbers_for_javascript"/>
+      /// <seealso cref="https://github.com/nquinlan/better-random-numbers-for-javascript-mirror/blob/8101d7cd95831b074f183e1f0ecb64ff207448a5/support/c/mash.h"/>
       private double Mash( dynamic data )
       {
          var n = 0xefc8249d;
@@ -175,7 +176,7 @@ namespace Yakhair.Ports.Grc.UhePrng
             {
                n += data.ToCharArray()[i]; // original: n += data.charCodeAt( i );
                double h = 0.02519603282416938 * n;
-               n = Convert.ToUInt32( (int)h >> 0 ); // original: n = h >>> 0;
+               n = Convert.ToUInt32( (int) h >> 0 ); // original: n = h >>> 0;
                h -= n;
                h *= n;
                n = Convert.ToUInt32( (int) h >> 0 ); // original: n = h >>> 0;
