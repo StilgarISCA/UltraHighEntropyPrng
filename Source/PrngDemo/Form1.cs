@@ -6,8 +6,6 @@ namespace PrngDemo
 {
    public partial class Form1 : Form
    {
-      public const double _log10e = 2.302585092994045684017991454684364;
-
       private UltraHighEntropyPrng _prng;
       private int _eventCount;
 
@@ -32,7 +30,7 @@ namespace PrngDemo
          var display = string.Empty;													// this is the string that we'll be placing into the PRN display DIV
          int range = Convert.ToInt32( numRange.Value );				// pull the form's parameters for our generation
          int count = Convert.ToInt32( numRange.Value );
-         var digits = Math.Floor( _log10e * Math.Log( range - 1 ) ) + 1;	// maximum number of digits in the "range"
+         var digits = Math.Floor( Math.Log10( Math.E ) * Math.Log( range - 1 ) ) + 1;	// maximum number of digits in the "range"
 
          // perform some preliminary parameter sanity checking
          if ( range <= 1 )
