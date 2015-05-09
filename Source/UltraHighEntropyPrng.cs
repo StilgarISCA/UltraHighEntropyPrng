@@ -86,7 +86,7 @@ namespace Yakhair.Ports.Grc.UhePrng
                _intermediates[_j] -= Mash( args[_i] );
                if ( _intermediates[_j] < 0 )
                {
-                  _intermediates[_j] = (char) ( _intermediates[_j] + 1 );
+                  _intermediates[_j] = ( _intermediates[_j] + 1 );
                }
             }
          }
