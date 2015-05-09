@@ -50,7 +50,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          var stringBuilder = new StringBuilder();
          for ( int i = 0; i < count; i++ )
          {
-            char newChar = Convert.ToChar( 33 + (int)Random( 94 ) );
+            char newChar = Convert.ToChar( 33 + (int) Random( 94 ) );
             stringBuilder.Append( newChar );
          }
          return stringBuilder.ToString();
@@ -183,7 +183,7 @@ namespace Yakhair.Ports.Grc.UhePrng
                h -= n;
                n += Convert.ToUInt32( h * 0x100000000 ); // 2^32
             }
-            return ( Convert.ToUInt32( n ) ) * 2.3283064365386963e-10; // 2^-32
+            return ( Convert.ToUInt32( n >> 0 ) ) * 2.3283064365386963e-10; // 2^-32
          }
 
          return n;

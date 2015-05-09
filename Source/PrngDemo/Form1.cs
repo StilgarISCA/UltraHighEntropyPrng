@@ -9,7 +9,6 @@ namespace PrngDemo
       private UltraHighEntropyPrng _prng;
       private int _eventCount;
 
-
       public Form1()
       {
          InitializeComponent();
@@ -30,7 +29,7 @@ namespace PrngDemo
          var display = string.Empty;													// this is the string that we'll be placing into the PRN display DIV
          int range = Convert.ToInt32( numRange.Value );				// pull the form's parameters for our generation
          int count = Convert.ToInt32( numRange.Value );
-         var digits = Math.Floor( Math.Log10( Math.E ) * Math.Log( range - 1 ) ) + 1;	// maximum number of digits in the "range"
+         double digits = Math.Floor( Math.Log10( Math.E ) * Math.Log( range - 1 ) ) + 1;	// maximum number of digits in the "range"
 
          // perform some preliminary parameter sanity checking
          if ( range <= 1 )
@@ -68,15 +67,15 @@ namespace PrngDemo
          rtbRandom.Text = display;
       }
 
-   // this 'addEntropy' function calls the UHEPRNG's built-in hashing function with whatever (optional)
-   // arguments it is provided, plus a count, the current time and a random value from the local browser
-   // as a means of pouring additional entropy into the UHEPRNG's internal state.
-   // Note that the invocation of the UHEPRNG initializes the PRNG with a large amount of initial entropy.
-   private void AddEntropy()
-   {
-      _prng.AddEntropy();
-      rtbSeedKey.Text = _prng.RandomString( 256 );				// obtain 256 random printable characters
-   }
+      // this 'addEntropy' function calls the UHEPRNG's built-in hashing function with whatever (optional)
+      // arguments it is provided, plus a count, the current time and a random value from the local browser
+      // as a means of pouring additional entropy into the UHEPRNG's internal state.
+      // Note that the invocation of the UHEPRNG initializes the PRNG with a large amount of initial entropy.
+      private void AddEntropy()
+      {
+         _prng.AddEntropy();
+         rtbSeedKey.Text = _prng.RandomString( 256 );				// obtain 256 random printable characters
+      }
 
       private void btnGenerate_Click( object sender, EventArgs e )
       {
