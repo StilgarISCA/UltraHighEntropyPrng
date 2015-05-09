@@ -81,5 +81,13 @@ namespace PrngDemo
       {
          Generate();
       }
+
+      private void btnReset_Click( object sender, EventArgs e )
+      {
+         rtbRandom.Text = string.Empty;
+         rdoRandomize.Checked = true;
+         numRange.Value = 10000;
+         numCount.Value = 10000;
+      }
    }
 }
