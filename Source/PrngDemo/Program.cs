@@ -13,7 +13,7 @@ namespace PrngDemo
       /// The main entry point for the application.
       /// </summary>
       [STAThread]
-      static void Main()
+      public static void Main()
       {
          var program = new Program();
          program.Start();
@@ -23,13 +23,23 @@ namespace PrngDemo
       {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault( false );
-         _form1 = new Form1();
 
+         _form1 = new Form1();
+         _form1.FormClosed += Form1OnClose;
+
+      }
+
+      private static void Form1OnClose( object sender, FormClosedEventArgs e )
+      {
+         Application.ExitThread();
       }
 
       public void Start()
       {
-         Application.Run( _form1 );
+         _form1.Initialize();
+         _form1.Show();
+
+         Application.Run();
       }
    }
 }

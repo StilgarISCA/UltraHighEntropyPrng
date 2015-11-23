@@ -1,4 +1,7 @@
-﻿namespace PrngDemo
+﻿using System;
+using System.Threading;
+
+namespace PrngDemo
 {
    partial class Form1
    {
@@ -21,6 +24,11 @@
       }
 
       #region Windows Form Designer generated code
+
+      public void Initialize()
+      {
+         Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
+      }
 
       /// <summary>
       /// Required method for Designer support - do not modify
