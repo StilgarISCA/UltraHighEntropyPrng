@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,7 +10,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       private double _carry;
       private int _phase;
       private double[] _intermediates;
-      private int _i, _j, _k; // general purpose locals
+      private int _j, _k; // general purpose locals
 
       private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
 
@@ -26,9 +25,9 @@ namespace Yakhair.Ports.Grc.UhePrng
          // browser's own local PRNG. This is okay since although its generator might not
          // be wonderful, it's useful for establishing large startup entropy for our usage.		
          //var mash = Mash();		// get a pointer to our high-performance "Mash" hash
-         for ( _i = 0; _i < _order; _i++ )
+         for ( int i = 0; i < _order; i++ )
          {
-            _intermediates[_i] = Mash( _random.NextDouble() );	// fill the array with initial mash hash values
+            _intermediates[i] = Mash( _random.NextDouble() );	// fill the array with initial mash hash values
          }
       }
 
@@ -79,11 +78,11 @@ namespace Yakhair.Ports.Grc.UhePrng
       /// <seealso cref="AddEntropy"/>
       private void Hash( string args )
       {
-         for ( _i = 0; _i < args.Length; _i++ )
+         for ( int i = 0; i < args.Length; i++ )
          {
             for ( _j = 0; _j < _order; _j++ )
             {
-               _intermediates[_j] -= Mash( args[_i] );
+               _intermediates[_j] -= Mash( args[i] );
                if ( _intermediates[_j] < 0 )
                {
                   _intermediates[_j] = ( _intermediates[_j] + 1 );
@@ -119,9 +118,9 @@ namespace Yakhair.Ports.Grc.UhePrng
          Mash( input );											// use the string to evolve the 'mash' state
 
          char[] inputAry = input.ToCharArray();
-         for ( _i = 0; _i < inputAry.Length; _i++ )   // scan through the characters in our string
+         for ( int i = 0; i < inputAry.Length; i++ )   // scan through the characters in our string
          {
-            _k = inputAry[_i];      						// get the character code at the location
+            _k = inputAry[i];      						// get the character code at the location
             for ( _j = 0; _j < _order; _j++ )			//	"mash" it into the UHEPRNG state
             {
                _intermediates[_j] -= Mash( _k );
@@ -149,9 +148,9 @@ namespace Yakhair.Ports.Grc.UhePrng
       public void InitState()
       {
          Mash();													// pass a null arg to force mash hash to init
-         for ( _i = 0; _i < _order; _i++ )
+         for ( int i = 0; i < _order; i++ )
          {
-            _intermediates[_i] = Mash( ' ' );	// fill the array with initial mash hash values
+            _intermediates[i] = Mash( ' ' );	// fill the array with initial mash hash values
          }
          _carry = 1;													// init our multiply-with-carry carry
          _phase = _order;  										// init our phase
