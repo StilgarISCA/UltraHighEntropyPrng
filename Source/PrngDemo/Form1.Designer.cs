@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace PrngDemo
 {
@@ -25,9 +26,9 @@ namespace PrngDemo
 
       #region Windows Form Designer generated code
 
-      public void Initialize()
+      public Task InitializeAsync()
       {
-         Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
+         return Task.Delay( TimeSpan.FromSeconds( 5 ) );
       }
 
       /// <summary>
