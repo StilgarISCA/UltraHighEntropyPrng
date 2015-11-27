@@ -10,7 +10,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       private double _carry;
       private int _phase;
       private double[] _intermediates;
-      private int _j, _k; // general purpose locals
+      private int _k; // general purpose locals
 
       private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
 
@@ -80,12 +80,12 @@ namespace Yakhair.Ports.Grc.UhePrng
       {
          for ( int i = 0; i < args.Length; i++ )
          {
-            for ( _j = 0; _j < _order; _j++ )
+            for ( int j = 0; j < _order; j++ )
             {
-               _intermediates[_j] -= Mash( args[i] );
-               if ( _intermediates[_j] < 0 )
+               _intermediates[j] -= Mash( args[i] );
+               if ( _intermediates[j] < 0 )
                {
-                  _intermediates[_j] = ( _intermediates[_j] + 1 );
+                  _intermediates[j] = ( _intermediates[j] + 1 );
                }
             }
          }
@@ -121,12 +121,12 @@ namespace Yakhair.Ports.Grc.UhePrng
          for ( int i = 0; i < inputAry.Length; i++ )   // scan through the characters in our string
          {
             _k = inputAry[i];      						// get the character code at the location
-            for ( _j = 0; _j < _order; _j++ )			//	"mash" it into the UHEPRNG state
+            for ( int j = 0; j < _order; j++ )			//	"mash" it into the UHEPRNG state
             {
-               _intermediates[_j] -= Mash( _k );
-               if ( _intermediates[_j] < 0 )
+               _intermediates[j] -= Mash( _k );
+               if ( _intermediates[j] < 0 )
                {
-                  _intermediates[_j] += 1;
+                  _intermediates[j] += 1;
                }
             }
          }
