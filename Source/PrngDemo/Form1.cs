@@ -15,8 +15,6 @@ namespace PrngDemo
 
          _prng = new UltraHighEntropyPrng();  // instantiate our uheprng for requesting PRNs
          _eventCount = 0;		// this counts events to introduce a (small) bit of additional entropy
-         var i = string.Empty;   	// general purpose local vars
-         var s = string.Empty;
          lblStatus.Text = string.Empty;
          AddEntropy();
       }
@@ -52,7 +50,7 @@ namespace PrngDemo
 
             // with the PRNG initialized into a known starting state by the provided SeedKey
             // we now pull the requested number of pseudo-random numbers from our the generator
-            for ( var i = 0; i < count; i++ )
+            for ( int i = 0; i < count; i++ )
             {					// iterate through, concatenating PRNs to the 'display' string
                //string s = _prng( range ).toString();					// call our PRNG and convert the return to a string
                string s = _prng.Random( range ).ToString();
