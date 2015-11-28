@@ -67,8 +67,8 @@ namespace Yakhair.Ports.Grc.UhePrng
             _phase = 0;
          }
          var t = 1768863 * _intermediates[_phase] + _carry * 2.3283064365386963e-10; // 2^-32
-         int temp = (int) t | 0;
-         return _intermediates[_phase] = t - ( _carry = temp );
+         _carry = (int) t | 0;
+         return _intermediates[_phase] = t - _carry;
       }
 
       /// <summary>

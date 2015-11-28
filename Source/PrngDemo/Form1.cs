@@ -40,7 +40,7 @@ namespace PrngDemo
             lblStatus.Text += "The \"Count\" of random values requested must be at least 1.";
          }
 
-         if ( display == string.Empty )
+         if ( string.IsNullOrWhiteSpace( display ) )
          {
             // we are about to generate our PRNs, so we capture the current "SeedKey"
             // from the webpage's form field and use it to setup our PRNG
