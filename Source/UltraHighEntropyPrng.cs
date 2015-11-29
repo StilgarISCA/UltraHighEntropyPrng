@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,6 +13,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       private int _phase;
       private double[] _intermediates;
       private int _k; // general purpose locals
+      private Mash _mash;
 
       private readonly Random _random = new Random(); // Used to simulate javascript's Math.random
 
@@ -24,10 +27,10 @@ namespace Yakhair.Ports.Grc.UhePrng
          // when our "uheprng" is initially invoked our PRNG state is initialized from the
          // browser's own local PRNG. This is okay since although its generator might not
          // be wonderful, it's useful for establishing large startup entropy for our usage.		
-         //var mash = Mash();		// get a pointer to our high-performance "Mash" hash
+         _mash = new Mash();		// get a pointer to our high-performance "Mash" hash
          for ( int i = 0; i < _order; i++ )
          {
-            _intermediates[i] = Mash( _random.NextDouble() );	// fill the array with initial mash hash values
+            _intermediates[i] = _mash.DoMash( _random.NextDouble() );	// fill the array with initial mash hash values
          }
       }
 
@@ -68,7 +71,8 @@ namespace Yakhair.Ports.Grc.UhePrng
          }
          var t = 1768863 * _intermediates[_phase] + _carry * 2.3283064365386963e-10; // 2^-32
          _carry = (int) t | 0;
-         return _intermediates[_phase] = t - _carry;
+         _intermediates[_phase] = t - _carry;
+         return _intermediates[_phase];
       }
 
       /// <summary>
@@ -82,7 +86,7 @@ namespace Yakhair.Ports.Grc.UhePrng
          {
             for ( int j = 0; j < _order; j++ )
             {
-               _intermediates[j] -= Mash( args[i] );
+               _intermediates[j] -= _mash.DoMash( args[i] );
                if ( _intermediates[j] < 0 )
                {
                   _intermediates[j] = ( _intermediates[j] + 1 );
@@ -115,7 +119,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       public void HashString( string input )
       {
          input = CleanString( input );
-         Mash( input );											// use the string to evolve the 'mash' state
+         _mash.DoMash( input );											// use the string to evolve the 'mash' state
 
          char[] inputAry = input.ToCharArray();
          for ( int i = 0; i < inputAry.Length; i++ )   // scan through the characters in our string
@@ -123,7 +127,7 @@ namespace Yakhair.Ports.Grc.UhePrng
             _k = inputAry[i];      						// get the character code at the location
             for ( int j = 0; j < _order; j++ )			//	"mash" it into the UHEPRNG state
             {
-               _intermediates[j] -= Mash( _k );
+               _intermediates[j] -= _mash.DoMash( _k );
                if ( _intermediates[j] < 0 )
                {
                   _intermediates[j] += 1;
@@ -147,54 +151,13 @@ namespace Yakhair.Ports.Grc.UhePrng
       // some hashing input
       public void InitState()
       {
-         Mash();													// pass a null arg to force mash hash to init
+         _mash.DoMash( null );												// pass a null arg to force mash hash to init
          for ( int i = 0; i < _order; i++ )
          {
-            _intermediates[i] = Mash( ' ' );	// fill the array with initial mash hash values
+            _intermediates[i] = _mash.DoMash( ' ' );	// fill the array with initial mash hash values
          }
          _carry = 1;													// init our multiply-with-carry carry
          _phase = _order;  										// init our phase
-      }
-
-      /// <summary>
-      /// Hashing function
-      /// </summary>
-      /// <param name="data">Data to hash</param>
-      /// <returns>Hashed value</returns>
-      /// <remarks> This is based upon Johannes Baagoe's carefully designed and efficient hash function for use with JavaScript.  It has a proven "avalanche" effect such that every bit of the input affects every bit of the output 50% of the time, which is good.</remarks>
-      /// <seealso cref="https://web.archive.org/web/20111119022126/http://baagoe.org/en/wiki/Better_random_numbers_for_javascript"/>
-      /// <seealso cref="https://github.com/nquinlan/better-random-numbers-for-javascript-mirror/blob/8101d7cd95831b074f183e1f0ecb64ff207448a5/support/c/mash.h"/>
-      private double Mash( dynamic data )
-      {
-         var n = 0xefc8249d;
-
-         if ( data != null )
-         {
-            data = data.ToString();
-            for ( var i = 0; i < data.Length; i++ )
-            {
-               n += data.ToCharArray()[i]; // original: n += data.charCodeAt( i );
-               double h = 0.02519603282416938 * n;
-               n = Convert.ToUInt32( (int) h >> 0 ); // original: n = h >>> 0;
-               h -= n;
-               h *= n;
-               n = Convert.ToUInt32( (int) h >> 0 ); // original: n = h >>> 0;
-               h -= n;
-               n += Convert.ToUInt32( h * 0x100000000 ); // 2^32
-            }
-            return ( Convert.ToUInt32( n >> 0 ) ) * 2.3283064365386963e-10; // 2^-32
-         }
-
-         return n;
-      }
-
-      /// <summary>
-      /// Hashing function
-      /// </summary>
-      /// <see cref="Mash()"/>
-      private double Mash()
-      {
-         return Mash( null );
       }
    }
 }
