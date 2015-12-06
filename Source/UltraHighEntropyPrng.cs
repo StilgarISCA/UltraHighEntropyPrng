@@ -142,7 +142,7 @@ namespace Yakhair.Ports.Grc.UhePrng
       /// <param name="values">Variable number of parameters used to generate additional entropy</param>
       public void AddEntropy( params string[] values )
       {
-         Hash( ( _k++ ) + ( DateTime.UtcNow.Ticks ) + string.Join( string.Empty, values ) + _random.Next( 0, int.MaxValue ) );
+         Hash( ( _k++ ) + ( DateTime.UtcNow.Ticks ) + string.Join( string.Empty, values ) + _random.NextDouble() );
       }
 
       // if we want to provide a deterministic startup context for our PRNG,
