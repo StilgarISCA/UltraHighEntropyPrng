@@ -17,6 +17,7 @@ namespace PrngDemo
          _eventCount = 0;		// this counts events to introduce a (small) bit of additional entropy
          lblStatus.Text = string.Empty;
          AddEntropy();
+         bkWkrSeedGenerator.RunWorkerAsync();
       }
 
       // this 'Generate' function is called whenever the user presses the "Generate Random Numbers" button on the web page.
@@ -86,6 +87,53 @@ namespace PrngDemo
          rdoRandomize.Checked = true;
          numRange.Value = 10000;
          numCount.Value = 10000;
+      }
+
+      private void bkWkrSeedGenerator_DoWork( object sender, System.ComponentModel.DoWorkEventArgs e )
+      {
+         while ( rdoRandomize.Checked )
+         {
+            _prng.AddEntropy();
+            bkWkrSeedGenerator.ReportProgress(1);
+
+            if ( bkWkrSeedGenerator.CancellationPending )
+            {
+               e.Cancel = true;
+               return;
+            }
+         }
+      }
+
+      private void bkWkrSeedGenerator_ProgressChanged( object sender, System.ComponentModel.ProgressChangedEventArgs e )
+      {
+         rtbSeedKey.Text = _prng.RandomString( 256 );
+      }
+
+      private void bkWkrSeedGenerator_RunWorkerCompleted( object sender, System.ComponentModel.RunWorkerCompletedEventArgs e )
+      {
+         rtbSeedKey.Text = _prng.RandomString( 256 );
+      }
+
+      private void rdoRandomize_CheckedChanged( object sender, EventArgs e )
+      {
+         SetWorkerState();
+      }
+
+      private void SetWorkerState()
+      {
+         if ( rdoRandomize.Checked )
+         {
+            bkWkrSeedGenerator.RunWorkerAsync();
+         }
+         else
+         {
+            bkWkrSeedGenerator.CancelAsync();
+         }
+      }
+
+      private void rdoFreeze_CheckedChanged( object sender, EventArgs e )
+      {
+         SetWorkerState();
       }
    }
 }

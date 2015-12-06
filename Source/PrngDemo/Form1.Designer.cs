@@ -51,6 +51,7 @@ namespace PrngDemo
          this.label2 = new System.Windows.Forms.Label();
          this.btnReset = new System.Windows.Forms.Button();
          this.label1 = new System.Windows.Forms.Label();
+         this.bkWkrSeedGenerator = new System.ComponentModel.BackgroundWorker();
          ((System.ComponentModel.ISupportInitialize)(this.numRange)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.numCount)).BeginInit();
          this.groupBox1.SuspendLayout();
@@ -161,6 +162,7 @@ namespace PrngDemo
          this.rdoRandomize.TabStop = true;
          this.rdoRandomize.Text = "Randomize the Seed Key";
          this.rdoRandomize.UseVisualStyleBackColor = true;
+         this.rdoRandomize.CheckedChanged += new System.EventHandler(this.rdoRandomize_CheckedChanged);
          // 
          // rdoFreeze
          // 
@@ -171,6 +173,7 @@ namespace PrngDemo
          this.rdoFreeze.TabIndex = 2;
          this.rdoFreeze.Text = "Freeze the Current Key";
          this.rdoFreeze.UseVisualStyleBackColor = true;
+         this.rdoFreeze.CheckedChanged += new System.EventHandler(this.rdoFreeze_CheckedChanged);
          // 
          // groupBox1
          // 
@@ -210,6 +213,14 @@ namespace PrngDemo
          this.label1.Size = new System.Drawing.Size(32, 13);
          this.label1.TabIndex = 14;
          this.label1.Text = "Seed";
+         // 
+         // bkWkrSeedGenerator
+         // 
+         this.bkWkrSeedGenerator.WorkerReportsProgress = true;
+         this.bkWkrSeedGenerator.WorkerSupportsCancellation = true;
+         this.bkWkrSeedGenerator.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bkWkrSeedGenerator_DoWork);
+         this.bkWkrSeedGenerator.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bkWkrSeedGenerator_ProgressChanged);
+         this.bkWkrSeedGenerator.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bkWkrSeedGenerator_RunWorkerCompleted);
          // 
          // Form1
          // 
@@ -255,6 +266,7 @@ namespace PrngDemo
       private System.Windows.Forms.Label label2;
       private System.Windows.Forms.Button btnReset;
       private System.Windows.Forms.Label label1;
+      private System.ComponentModel.BackgroundWorker bkWkrSeedGenerator;
    }
 }
 
